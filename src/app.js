@@ -1,7 +1,5 @@
 import * as yup from 'yup'
-import * as _ from 'lodash'
 import axios from 'axios'
-import fs from 'fs'
 import watch from './view.js'
 import i18next from 'i18next'
 import ru from '../locale/index.js'
@@ -14,7 +12,7 @@ const schema = yup.string().url().nullable()
 const validate = (url, urls) => {
   return schema.notOneOf(urls).validate(url)
     .then(() => null)
-    .catch((error) => error.message)
+    .catch(error => error.message)
 }
 
 const load = (watchedState, url) => {
@@ -27,14 +25,14 @@ const load = (watchedState, url) => {
     .catch(error => watchedState.process = { status: 'error', error })
 }
 
-const handleSubmit = (watchedState) => (event) => {
+const handleSubmit = watchedState => (event) => {
   event.preventDefault()
   const url = new FormData(event.target).get('url')
   // нужно ли нам вводить переменную urls
   // или просто написать watchedState.feeds?
   const urls = watchedState.feeds
   validate(url, urls)
-    .then(error => {
+    .then((error) => {
       if (error) {
         watchedState.form = { isValid: false, error }
         // console.log(watchedState.form.error)

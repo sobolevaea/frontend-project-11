@@ -1,5 +1,4 @@
 import onChange from 'on-change'
-import i18next from 'i18next'
 
 export default (elements, state, i18nextInstance) => {
   const watchedState = onChange(state, (path) => {
@@ -9,7 +8,8 @@ export default (elements, state, i18nextInstance) => {
           elements.urlField.classList.remove('is-invalid')
           elements.feedback.classList.replace('text-danger', 'text-success')
           elements.feedback.textContent = i18nextInstance.t('messages.success')
-        } else {
+        }
+        else {
           elements.urlField.classList.add('is-invalid')
           elements.feedback.classList.add('text-danger')
           elements.feedback.textContent = i18nextInstance.t(`messages.errors.${watchedState.form.error.key}`)
@@ -38,8 +38,9 @@ export default (elements, state, i18nextInstance) => {
           default:
             break
         }
-        default:
-          break
+        break
+      default:
+        break
     }
   })
 
