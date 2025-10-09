@@ -1,20 +1,19 @@
 import onChange from 'on-change'
+import i18next from 'i18next'
 
-export default (elements, state, i18next) => {
+export default (elements, state, i18nextInstance) => {
   const watchedState = onChange(state, (path) => {
-    console.log(path)
     switch (path) {
       case 'form':
         if (watchedState.form.isValid) {
           elements.urlField.classList.remove('is-invalid')
-          return
+          elements.feedback.classList.replace('text-danger', 'text-success')
+          elements.feedback.textContent = i18nextInstance.t('messages.success')
         } else {
           elements.urlField.classList.add('is-invalid')
+          elements.feedback.classList.add('text-danger')
+          elements.feedback.textContent = i18nextInstance.t(`messages.errors.${watchedState.form.error.key}`)
         }
-        // что происходит при изменении полей формы?
-        // посмотреть, валидна ли форма
-        // если нет, то вывести ошибку
-        // а если да, то убрать все предупреждения об ошибках
         break
       case 'process':
         switch (watchedState.process.status) {
