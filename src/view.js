@@ -3,7 +3,11 @@ import onChange from 'on-change'
 export default (elements, state, i18nextInstance) => {
   const watchedState = onChange(state, (path) => {
     switch (path) {
+      // отображать посты
+      // вызвать handlePosts()
+
       case 'form':
+        // вызвать handleForm()
         if (watchedState.form.isValid) {
           elements.urlField.classList.remove('is-invalid')
           elements.feedback.classList.replace('text-danger', 'text-success')
@@ -17,7 +21,7 @@ export default (elements, state, i18nextInstance) => {
         break
       case 'process':
         switch (watchedState.process.status) {
-          case 'sent':
+          case 'success':
             elements.form.reset()
             elements.urlField.focus()
             elements.submitButton.disabled = false
@@ -27,7 +31,7 @@ export default (elements, state, i18nextInstance) => {
             elements.submitButton.disabled = false
             break
 
-          case 'sending':
+          case 'loading':
             elements.submitButton.disabled = true
             break
 

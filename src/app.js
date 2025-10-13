@@ -4,6 +4,8 @@ import watch from './view.js'
 import i18next from 'i18next'
 import ru from '../locale/index.js'
 import yupLocale from '../locale/yupLocale.js'
+import parseResponse from './parser.js'
+import _ from 'lodash'
 
 yup.setLocale(yupLocale)
 
@@ -16,26 +18,38 @@ const validate = (url, urls) => {
 }
 
 const load = (watchedState, url) => {
-  watchedState.process = { status: 'sending', error: '' }
-  axios.get(url)
-    .then(() => {
-      watchedState.process = { status: 'sent', error: '' }
-      watchedState.feeds.push(url)
+  watchedState.process = { status: 'loading', error: '' }
+  axios.get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(url)}`)
+    .then((response) => {
+      const parsedResponse = parseResponse(response)
+      // const feed = parsedResponse.feed
+      // const posts = parsedResponse.posts
+      parsedResponse.feed.id = _.uniqueId()
+      parsedResponse.posts.forEach(post => {
+        post.id = _.uniqueId()
+        post.feedId = parsedResponse.feed.id
+      })
+      watchedState.process = { status: 'success', error: '' }
+      watchedState.feeds.push(parsedResponse.feed)
+      watchedState.posts.push(parsedResponse.posts)
     })
-    .catch(error => watchedState.process = { status: 'error', error })
+    // потом доделать
+    // выяснить пришла ошибка парсера или еще какая-то (загрузка, парсер, время ожидания, неизвестная ошибка)
+    .catch(error => {
+      console.log(error)
+      return watchedState.process = { status: 'error', error }
+    })
 }
 
 const handleSubmit = watchedState => (event) => {
   event.preventDefault()
   const url = new FormData(event.target).get('url')
-  // нужно ли нам вводить переменную urls
-  // или просто написать watchedState.feeds?
-  const urls = watchedState.feeds
+  const urls = watchedState.feeds.map(feed => feed.url)
+  console.log(urls)
   validate(url, urls)
     .then((error) => {
       if (error) {
         watchedState.form = { isValid: false, error }
-        // console.log(watchedState.form.error)
         return
       }
       watchedState.form = { isValid: true, error: '' }
@@ -61,6 +75,7 @@ const app = () => {
       error: '',
     },
     feeds: [],
+    posts: [],
   }
 
   const defaultLanguage = 'ru'
