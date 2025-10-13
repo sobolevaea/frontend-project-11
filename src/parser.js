@@ -1,12 +1,12 @@
 // import * as _ from 'lodash'
 
-const parseResponse = (content) => {
+const parse = (content) => {
   const parser = new DOMParser()
   const xmlString = content.data.contents
   const dom = parser.parseFromString(xmlString, 'application/xhtml+xml')
   const errorNode = dom.querySelector('parsererror')
   if (errorNode) {
-    throw new Error(`Parser error: not XML`)
+    throw new Error(`notRss`)
   }
 
   const channelPosts = Array.from(dom.querySelectorAll('item')).map(post => ({
@@ -19,10 +19,9 @@ const parseResponse = (content) => {
     feed: {
       title: dom.querySelector('channel > title').textContent,
       description: dom.querySelector('channel > description').textContent,
-      url: dom.querySelector('channel > link').textContent,
     },
     posts: channelPosts,
   }
 }
 
-export default parseResponse
+export default parse

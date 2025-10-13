@@ -4,7 +4,7 @@ import watch from './view.js'
 import i18next from 'i18next'
 import ru from '../locale/index.js'
 import yupLocale from '../locale/yupLocale.js'
-import parseResponse from './parser.js'
+import parse from './parser.js'
 import _ from 'lodash'
 
 yup.setLocale(yupLocale)
@@ -19,25 +19,26 @@ const validate = (url, urls) => {
 
 const load = (watchedState, url) => {
   watchedState.process = { status: 'loading', error: '' }
-  axios.get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(url)}`)
+  axios.get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(url)}`, {
+    timeout: 10000,
+  })
     .then((response) => {
-      const parsedResponse = parseResponse(response)
-      // const feed = parsedResponse.feed
-      // const posts = parsedResponse.posts
-      parsedResponse.feed.id = _.uniqueId()
-      parsedResponse.posts.forEach((post) => {
+      const { feed, posts } = parse(response)
+      feed.id = _.uniqueId()
+      feed.url = url
+      posts.forEach((post) => {
         post.id = _.uniqueId()
-        post.feedId = parsedResponse.feed.id
+        post.feedId = feed.id
       })
       watchedState.process = { status: 'success', error: '' }
-      watchedState.feeds.push(parsedResponse.feed)
-      watchedState.posts.push(parsedResponse.posts)
+      watchedState.feeds.push(feed)
+      watchedState.posts.push(...posts)
     })
-    // потом доделать
-    // выяснить пришла ошибка парсера или еще какая-то (загрузка, парсер, время ожидания, неизвестная ошибка)
     .catch((error) => {
-      console.log(error)
-      return watchedState.process = { status: 'error', error }
+      if (axios.isAxiosError(error)) {
+        return watchedState.process = { status: 'error', error: 'badConnection' }
+      }
+      return watchedState.process = { status: 'error', error: error.message }
     })
 }
 
@@ -45,7 +46,6 @@ const handleSubmit = watchedState => (event) => {
   event.preventDefault()
   const url = new FormData(event.target).get('url')
   const urls = watchedState.feeds.map(feed => feed.url)
-  console.log(urls)
   validate(url, urls)
     .then((error) => {
       if (error) {
@@ -63,6 +63,8 @@ const app = () => {
     urlField: document.getElementById('url-input'),
     submitButton: document.querySelector('[aria-label="add"]'),
     feedback: document.querySelector('.feedback'),
+    feedsContainer: document.querySelector('.feeds'),
+    postsContainer: document.querySelector('.posts'),
   }
 
   const state = {
