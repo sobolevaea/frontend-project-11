@@ -85,6 +85,7 @@ const handleForm = (elements, watchedState, i18nextInstance) => {
 }
 
 const handleProcess = (elements, watchedState, i18nextInstance) => {
+  const unknownErrorMessage = i18nextInstance.t('messages.errors.other')
   switch (watchedState.process.status) {
     case 'success':
       elements.form.reset()
@@ -98,7 +99,6 @@ const handleProcess = (elements, watchedState, i18nextInstance) => {
       elements.submitButton.disabled = false
       elements.urlField.classList.add('is-invalid')
       elements.feedback.classList.add('text-danger')
-      const unknownErrorMessage = i18nextInstance.t('messages.errors.other')
       elements.feedback.textContent = i18nextInstance.t(`messages.errors.${watchedState.process.error}`, unknownErrorMessage)
       break
     case 'loading':
