@@ -6,6 +6,7 @@ export default {
         exists: 'RSS уже существует',
         notRss: 'Ресурс не содержит валидный RSS',
         badConnection: 'Ошибка сети',
+        other: 'Неизвестная ошибка',
       },
       success: 'RSS успешно загружен',
     },
