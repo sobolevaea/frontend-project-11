@@ -72,7 +72,7 @@ const handlePosts = (elements, watchedState, i18nextInstance) => {
     return post
   })
   listGroup.append(...posts)
-  elements.feedsContainer.append(card, listGroup)
+  elements.postsContainer.append(card, listGroup)
 }
 
 const handleForm = (elements, watchedState, i18nextInstance) => {
