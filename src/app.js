@@ -25,7 +25,7 @@ const load = (watchedState, url) => {
       // const feed = parsedResponse.feed
       // const posts = parsedResponse.posts
       parsedResponse.feed.id = _.uniqueId()
-      parsedResponse.posts.forEach(post => {
+      parsedResponse.posts.forEach((post) => {
         post.id = _.uniqueId()
         post.feedId = parsedResponse.feed.id
       })
@@ -35,7 +35,7 @@ const load = (watchedState, url) => {
     })
     // потом доделать
     // выяснить пришла ошибка парсера или еще какая-то (загрузка, парсер, время ожидания, неизвестная ошибка)
-    .catch(error => {
+    .catch((error) => {
       console.log(error)
       return watchedState.process = { status: 'error', error }
     })
