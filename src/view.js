@@ -61,10 +61,10 @@ const handlePosts = (elements, watchedState, i18nextInstance) => {
     // const linkClass = _.includes(watchedState.seen, id) ? 'fw-normal' : 'fw-bold'
     // postLink.classList.add(linkClass)
     // добавление серого цвета для просмотренных постов
-    feedLink.classList.add('fw-bold')
+    postLink.classList.add('fw-bold')
     if (_.includes(watchedState.seen, id)) {
-      feedLink.classList.replace('fw-bold', 'fw-normal')
-      feedLink.classList.add('link-secondary')
+      postLink.classList.replace('fw-bold', 'fw-normal')
+      postLink.classList.add('link-secondary')
     }
     postLink.setAttribute('href', url)
     postLink.setAttribute('data-id', feedId)
