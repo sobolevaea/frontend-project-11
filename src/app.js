@@ -71,25 +71,23 @@ const checkNewPosts = (watchedState) => {
     .map(feed => axios.get(addProxy(feed.url), {
       timeout: 10000,
     })
-    .then((response) => {
-      const data = parse(response)
-      data.posts.forEach(post => {
-        if (!_.includes(updatedPostsUrls, post.url)) {
-          post.id = _.uniqueId()
-          post.feedId = feed.id
-          watchedState.posts.push(post)
-        }
-      })
-    }).catch(() => null))
-    const promise = Promise.all(promises)
+      .then((response) => {
+        const data = parse(response)
+        data.posts.forEach((post) => {
+          if (!_.includes(updatedPostsUrls, post.url)) {
+            post.id = _.uniqueId()
+            post.feedId = feed.id
+            watchedState.posts.push(post)
+          }
+        })
+      }).catch(() => null))
+  Promise.all(promises)
 }
 
 const checkEveryFiveSeconds = (watchedState) => {
   checkNewPosts(watchedState)
   setTimeout(() => checkEveryFiveSeconds(watchedState), 5000)
 }
-
-
 
 const app = () => {
   const elements = {

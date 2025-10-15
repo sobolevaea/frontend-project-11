@@ -46,9 +46,7 @@ const handlePosts = (elements, watchedState, i18nextInstance) => {
 
   const listGroup = document.createElement('ul')
   listGroup.classList.add('list-group', 'border-0', 'rounded-0')
-  console.log(watchedState.posts)
   const posts = watchedState.posts.map(({ title, url, feedId }) => {
-    console.log(title)
     const post = document.createElement('li')
     post.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0')
 
