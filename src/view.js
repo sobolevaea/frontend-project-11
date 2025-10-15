@@ -57,17 +57,20 @@ const handlePosts = (elements, watchedState, i18nextInstance) => {
     const post = document.createElement('li')
     post.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0')
 
-    const feedLink = document.createElement('a')
-    feedLink.classList.add('fw-bold')
-    if (_.includes(watchedState.seen, id)) {
-      feedLink.classList.replace('fw-bold', 'fw-normal')
-      feedLink.classList.add('link-secondary')
-    }
-    feedLink.setAttribute('href', url)
-    feedLink.setAttribute('data-id', feedId)
-    feedLink.setAttribute('target', '_blank')
-    feedLink.setAttribute('rel', 'noopener noreferrer')
-    feedLink.textContent = title
+    const postLink = document.createElement('a')
+    const linkClass = _.includes(watchedState.seen, id) ? 'fw-normal' : 'fw-bold'
+    postLink.classList.add(linkClass)
+    // добавление серого цвета для просмотренных постов
+    // feedLink.classList.add('fw-bold')
+    // if (_.includes(watchedState.seen, id)) {
+    //   feedLink.classList.replace('fw-bold', 'fw-normal')
+    //   feedLink.classList.add('link-secondary')
+    // }
+    postLink.setAttribute('href', url)
+    postLink.setAttribute('data-id', feedId)
+    postLink.setAttribute('target', '_blank')
+    postLink.setAttribute('rel', 'noopener noreferrer')
+    postLink.textContent = title
 
     const viewButton = document.createElement('button')
     viewButton.classList.add('btn', 'btn-outline-primary', 'btn-sm')
@@ -77,7 +80,7 @@ const handlePosts = (elements, watchedState, i18nextInstance) => {
     viewButton.setAttribute('data-bs-target', '#modal')
     viewButton.textContent = i18nextInstance.t('cards.posts.viewButton')
 
-    feedLink.addEventListener('click', () => {
+    postLink.addEventListener('click', () => {
       handleSeen(watchedState, id)
     })
     viewButton.addEventListener('click', () => {
@@ -87,7 +90,7 @@ const handlePosts = (elements, watchedState, i18nextInstance) => {
       elements.moreButton.setAttribute('href', url)
     })
 
-    post.append(feedLink, viewButton)
+    post.append(postLink, viewButton)
     return post
   })
   listGroup.append(...posts)
