@@ -64,6 +64,33 @@ const handleSubmit = watchedState => (event) => {
     })
 }
 
+const checkNewPosts = (watchedState) => {
+  const updatedPostsUrls = watchedState.posts.map(post => post.url)
+  console.log(updatedPostsUrls.length)
+  const promises = watchedState.feeds
+    .map(feed => axios.get(addProxy(feed.url), {
+      timeout: 10000,
+    })
+    .then((response) => {
+      const data = parse(response)
+      data.posts.forEach(post => {
+        if (!_.includes(updatedPostsUrls, post.url)) {
+          post.id = _.uniqueId()
+          post.feedId = feed.id
+          watchedState.posts.push(post)
+        }
+      })
+    }).catch(() => null))
+    const promise = Promise.all(promises)
+}
+
+const checkEveryFiveSeconds = (watchedState) => {
+  checkNewPosts(watchedState)
+  setTimeout(() => checkEveryFiveSeconds(watchedState), 5000)
+}
+
+
+
 const app = () => {
   const elements = {
     form: document.querySelector('.rss-form'),
@@ -98,6 +125,7 @@ const app = () => {
   }).then(() => {
     const watchedState = watch(elements, state, i18nextInstance)
     elements.form.addEventListener('submit', handleSubmit(watchedState))
+    checkEveryFiveSeconds(watchedState)
   })
 }
 
