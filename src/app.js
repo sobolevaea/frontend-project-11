@@ -101,6 +101,7 @@ const app = () => {
     postsContainer: document.querySelector('.posts'),
     modalTitle: document.querySelector('.modal-title'),
     modalBody: document.querySelector('.modal-body'),
+    moreButton: document.querySelector('.full-article'),
   }
 
   const state = {

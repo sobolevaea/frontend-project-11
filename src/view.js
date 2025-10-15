@@ -58,8 +58,11 @@ const handlePosts = (elements, watchedState, i18nextInstance) => {
     post.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0')
 
     const feedLink = document.createElement('a')
-    const linkClass = _.includes(watchedState.seen, id) ? 'fw-normal' : 'fw-bold'
-    feedLink.classList.add(linkClass)
+    feedLink.classList.add('fw-bold')
+    if (_.includes(watchedState.seen, id)) {
+      feedLink.classList.replace('fw-bold', 'fw-normal')
+      feedLink.classList.add('link-secondary')
+    }
     feedLink.setAttribute('href', url)
     feedLink.setAttribute('data-id', feedId)
     feedLink.setAttribute('target', '_blank')
@@ -81,6 +84,7 @@ const handlePosts = (elements, watchedState, i18nextInstance) => {
       handleSeen(watchedState, id)
       elements.modalTitle.textContent = title
       elements.modalBody.textContent = description
+      elements.moreButton.setAttribute('href', url)
     })
 
     post.append(feedLink, viewButton)
