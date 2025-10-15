@@ -1,5 +1,3 @@
-// import * as _ from 'lodash'
-
 const parse = (content) => {
   const parser = new DOMParser()
   const xmlString = content.data.contents
