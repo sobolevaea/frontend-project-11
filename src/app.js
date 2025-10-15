@@ -1,5 +1,6 @@
 import * as yup from 'yup'
 import 'bootstrap'
+import 'bootstrap/dist/css/bootstrap.min.css'
 import axios from 'axios'
 import watch from './view.js'
 import i18next from 'i18next'
