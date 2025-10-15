@@ -17,9 +17,16 @@ const validate = (url, urls) => {
     .catch(error => error.message)
 }
 
+const addProxy = (url) => {
+  const data = new URL('/get', 'https://allorigins.hexlet.app')
+  data.searchParams.set('disableCache', true)
+  data.searchParams.set('url', url)
+  return data.href
+}
+
 const load = (watchedState, url) => {
   watchedState.process = { status: 'loading', error: '' }
-  axios.get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(url)}`, {
+  axios.get(addProxy(url), {
     timeout: 10000,
   })
     .then((response) => {
