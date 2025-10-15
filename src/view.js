@@ -1,4 +1,11 @@
+import _ from 'lodash'
 import onChange from 'on-change'
+
+const handleSeen = (watchedState, id) => {
+  if (!_.includes(watchedState.seen, id)) {
+    watchedState.seen.push(id)
+  }
+}
 
 const handleFeeds = (elements, watchedState, i18nextInstance) => {
   elements.feedsContainer.innerHTML = ''
@@ -46,12 +53,13 @@ const handlePosts = (elements, watchedState, i18nextInstance) => {
 
   const listGroup = document.createElement('ul')
   listGroup.classList.add('list-group', 'border-0', 'rounded-0')
-  const posts = watchedState.posts.map(({ title, url, feedId }) => {
+  const posts = watchedState.posts.map(({ title, description, url, id, feedId }) => {
     const post = document.createElement('li')
     post.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0')
 
     const feedLink = document.createElement('a')
-    feedLink.classList.add('fw-bold')
+    const linkClass = _.includes(watchedState.seen, id) ? 'fw-normal' : 'fw-bold'
+    feedLink.classList.add(linkClass)
     feedLink.setAttribute('href', url)
     feedLink.setAttribute('data-id', feedId)
     feedLink.setAttribute('target', '_blank')
@@ -65,6 +73,15 @@ const handlePosts = (elements, watchedState, i18nextInstance) => {
     viewButton.setAttribute('data-bs-toggle', 'modal')
     viewButton.setAttribute('data-bs-target', '#modal')
     viewButton.textContent = i18nextInstance.t('cards.posts.viewButton')
+
+    feedLink.addEventListener('click', () => {
+      handleSeen(watchedState, id)
+    })
+    viewButton.addEventListener('click', () => {
+      handleSeen(watchedState, id)
+      elements.modalTitle.textContent = title
+      elements.modalBody.textContent = description
+    })
 
     post.append(feedLink, viewButton)
     return post
@@ -113,6 +130,9 @@ const handleProcess = (elements, watchedState, i18nextInstance) => {
 export default (elements, state, i18nextInstance) => {
   const watchedState = onChange(state, (path) => {
     switch (path) {
+      case 'seen':
+        handlePosts(elements, watchedState, i18nextInstance)
+        break
       case 'feeds':
         handleFeeds(elements, watchedState, i18nextInstance)
         break

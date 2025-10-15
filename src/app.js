@@ -1,4 +1,5 @@
 import * as yup from 'yup'
+import 'bootstrap'
 import axios from 'axios'
 import watch from './view.js'
 import i18next from 'i18next'
@@ -97,6 +98,8 @@ const app = () => {
     feedback: document.querySelector('.feedback'),
     feedsContainer: document.querySelector('.feeds'),
     postsContainer: document.querySelector('.posts'),
+    modalTitle: document.querySelector('.modal-title'),
+    modalBody: document.querySelector('.modal-body'),
   }
 
   const state = {
@@ -110,6 +113,7 @@ const app = () => {
     },
     feeds: [],
     posts: [],
+    seen: [],
   }
 
   const defaultLanguage = 'ru'
