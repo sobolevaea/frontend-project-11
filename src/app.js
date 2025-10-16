@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import axios from 'axios'
 import watch from './view.js'
 import i18next from 'i18next'
-import ru from '../locale/index.js'
+import resources from '../locale/index.js'
 import yupLocale from '../locale/yupLocale.js'
 import parse from './parser.js'
 import _ from 'lodash'
@@ -123,9 +123,7 @@ const app = () => {
   i18nextInstance.init({
     lng: defaultLanguage,
     debug: false,
-    resources: {
-      ru,
-    },
+    resources,
   }).then(() => {
     const watchedState = watch(elements, state, i18nextInstance)
     elements.form.addEventListener('submit', handleSubmit(watchedState))
