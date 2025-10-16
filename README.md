@@ -49,8 +49,7 @@ The application will open in your browser at http://localhost:5173 (or another a
 |`make build`|Create optimized production build|Before deployment, for testing|
 |`make preview`|Preview production build locally|Final testing before deployment|
 |`make lint`|Check code for style and quality issues|Before commits, in CI/CD pipeline|
-|`make fix`|Automatically fix linting issues|When linting reports fixable errors
-|
+|`make fix`|Automatically fix linting issues|When linting reports fixable errors|
 
 ## How to Use
 1. Go to the [**main application page**](https://frontend-project-11-rss-six.vercel.app/).
