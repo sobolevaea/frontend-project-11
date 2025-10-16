@@ -1,11 +1,5 @@
 import onChange from 'on-change'
 
-const handleSeen = (watchedState, id) => {
-  if (!watchedState.seen.has(id)) {
-    watchedState.seen.add(id)
-  }
-}
-
 const handleFeeds = (elements, watchedState, i18nextInstance) => {
   elements.feedsContainer.innerHTML = ''
 
@@ -37,22 +31,8 @@ const handleFeeds = (elements, watchedState, i18nextInstance) => {
   elements.feedsContainer.append(card, listGroup)
 }
 
-const handlePosts = (elements, watchedState, i18nextInstance) => {
-  elements.postsContainer.innerHTML = ''
-
-  const card = document.createElement('div')
-  card.classList.add('card', 'border-0')
-  const cardBody = document.createElement('div')
-  cardBody.classList.add('card-body')
-  const cardTitle = document.createElement('h2')
-  cardTitle.classList.add('card-title', 'h4')
-  cardTitle.textContent = i18nextInstance.t('cards.posts.cardTitle')
-  cardBody.append(cardTitle)
-  card.append(cardBody)
-
-  const listGroup = document.createElement('ul')
-  listGroup.classList.add('list-group', 'border-0', 'rounded-0')
-  const posts = watchedState.posts.map(({ title, description, url, id, feedId }) => {
+const renderPosts = (elements, watchedState, i18nextInstance) => {
+  return watchedState.posts.map(({ title, description, url, id, feedId }) => {
     const post = document.createElement('li')
     post.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0')
 
@@ -77,10 +57,10 @@ const handlePosts = (elements, watchedState, i18nextInstance) => {
     viewButton.textContent = i18nextInstance.t('cards.posts.viewButton')
 
     postLink.addEventListener('click', () => {
-      handleSeen(watchedState, id)
+      watchedState.seen.add(id)
     })
     viewButton.addEventListener('click', () => {
-      handleSeen(watchedState, id)
+      watchedState.seen.add(id)
       elements.modalTitle.textContent = title
       elements.modalBody.textContent = description
       elements.moreButton.setAttribute('href', url)
@@ -89,7 +69,25 @@ const handlePosts = (elements, watchedState, i18nextInstance) => {
     post.append(postLink, viewButton)
     return post
   })
-  listGroup.append(...posts)
+}
+
+const handlePosts = (elements, watchedState, i18nextInstance) => {
+  elements.postsContainer.innerHTML = ''
+
+  const card = document.createElement('div')
+  card.classList.add('card', 'border-0')
+  const cardBody = document.createElement('div')
+  cardBody.classList.add('card-body')
+  const cardTitle = document.createElement('h2')
+  cardTitle.classList.add('card-title', 'h4')
+  cardTitle.textContent = i18nextInstance.t('cards.posts.cardTitle')
+  cardBody.append(cardTitle)
+  card.append(cardBody)
+
+  const listGroup = document.createElement('ul')
+  listGroup.classList.add('list-group', 'border-0', 'rounded-0')
+  const renderedPosts = renderPosts(elements, watchedState, i18nextInstance)
+  listGroup.append(...renderedPosts)
   elements.postsContainer.append(card, listGroup)
 }
 
@@ -99,11 +97,12 @@ const handleForm = (elements, watchedState, i18nextInstance) => {
     elements.feedback.classList.add('text-danger')
     elements.feedback.textContent = i18nextInstance.t(`messages.errors.${watchedState.form.error.key}`)
   }
-  return
+  elements.urlField.classList.remove('is-invalid')
+  elements.feedback.classList.replace('text-danger', 'text-success')
+  elements.feedback.textContent = ''
 }
 
 const handleProcess = (elements, watchedState, i18nextInstance) => {
-  const unknownErrorMessage = i18nextInstance.t('messages.errors.other')
   switch (watchedState.process.status) {
     case 'success':
       elements.form.reset()
@@ -119,7 +118,7 @@ const handleProcess = (elements, watchedState, i18nextInstance) => {
       elements.urlField.readonly = false
       elements.urlField.classList.add('is-invalid')
       elements.feedback.classList.add('text-danger')
-      elements.feedback.textContent = i18nextInstance.t(`messages.errors.${watchedState.process.error}`, unknownErrorMessage)
+      elements.feedback.textContent = i18nextInstance.t(`messages.errors.${watchedState.process.error}`)
       break
     case 'loading':
       elements.submitButton.disabled = true

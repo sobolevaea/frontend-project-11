@@ -10,7 +10,7 @@ import yupLocale from '../locale/yupLocale.js'
 
 const defaultLanguage = 'ru'
 const waitingTimeout = 10000
-const verificationTimeout = 5000
+const updateInterval = 5000
 
 yup.setLocale(yupLocale)
 
@@ -36,7 +36,7 @@ const getErrorKey = (error) => {
     case error.isParserError:
       return 'notRss'
     default:
-      return 'other'
+      return 'unknown'
   }
 }
 
@@ -81,14 +81,12 @@ const updatePosts = (watchedState) => {
       timeout: waitingTimeout,
     })
       .then((response) => {
+        const feedPostsUrls = watchedState.posts
+          .filter(post => post.feedId === feed.id)
+          .map(post => post.url)
         const data = parse(response)
         data.posts.forEach((post) => {
-          const updatedPostsUrls = watchedState.posts.map((post) => {
-            if (post.feedId === feed.id) {
-              return post.url
-            }
-          })
-          if (!_.includes(updatedPostsUrls, post.url)) {
+          if (!_.includes(feedPostsUrls, post.url)) {
             post.id = _.uniqueId()
             post.feedId = feed.id
             watchedState.posts.push(post)
@@ -96,7 +94,7 @@ const updatePosts = (watchedState) => {
         })
       }).catch(() => null))
   Promise.all(promises)
-    .then(() => setTimeout(() => updatePosts(watchedState), verificationTimeout))
+    .then(() => setTimeout(() => updatePosts(watchedState), updateInterval))
 }
 
 const app = () => {
