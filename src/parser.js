@@ -4,7 +4,9 @@ const parse = (content) => {
   const dom = parser.parseFromString(xmlString, 'application/xhtml+xml')
   const errorNode = dom.querySelector('parsererror')
   if (errorNode) {
-    throw new Error(`notRss`)
+    const error = new Error('Parser error')
+    error.isParserError = true
+    throw error
   }
 
   const channelPosts = Array.from(dom.querySelectorAll('item')).map(post => ({

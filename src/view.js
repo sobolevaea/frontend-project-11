@@ -1,9 +1,8 @@
-import _ from 'lodash'
 import onChange from 'on-change'
 
 const handleSeen = (watchedState, id) => {
-  if (!_.includes(watchedState.seen, id)) {
-    watchedState.seen.push(id)
+  if (!watchedState.seen.has(id)) {
+    watchedState.seen.add(id)
   }
 }
 
@@ -58,11 +57,8 @@ const handlePosts = (elements, watchedState, i18nextInstance) => {
     post.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0')
 
     const postLink = document.createElement('a')
-    // const linkClass = _.includes(watchedState.seen, id) ? 'fw-normal' : 'fw-bold'
-    // postLink.classList.add(linkClass)
-    // добавление серого цвета для просмотренных постов
     postLink.classList.add('fw-bold')
-    if (_.includes(watchedState.seen, id)) {
+    if (watchedState.seen.has(id)) {
       postLink.classList.replace('fw-bold', 'fw-normal')
       postLink.classList.add('link-secondary')
     }
@@ -113,21 +109,26 @@ const handleProcess = (elements, watchedState, i18nextInstance) => {
       elements.form.reset()
       elements.urlField.focus()
       elements.submitButton.disabled = false
+      elements.urlField.readonly = false
       elements.urlField.classList.remove('is-invalid')
       elements.feedback.classList.replace('text-danger', 'text-success')
       elements.feedback.textContent = i18nextInstance.t('messages.success')
       break
     case 'error':
       elements.submitButton.disabled = false
+      elements.urlField.readonly = false
       elements.urlField.classList.add('is-invalid')
       elements.feedback.classList.add('text-danger')
       elements.feedback.textContent = i18nextInstance.t(`messages.errors.${watchedState.process.error}`, unknownErrorMessage)
       break
     case 'loading':
       elements.submitButton.disabled = true
+      elements.urlField.readonly = true
+      elements.feedback.textContent = ''
       break
     case 'filling':
       elements.submitButton.disabled = false
+      elements.urlField.readonly = false
       break
     default:
       break

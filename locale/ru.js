@@ -5,7 +5,7 @@ export default {
         notUrl: 'Ссылка должна быть валидным URL',
         exists: 'RSS уже существует',
         notRss: 'Ресурс не содержит валидный RSS',
-        badConnection: 'Ошибка сети',
+        network: 'Ошибка сети',
         other: 'Неизвестная ошибка',
       },
       success: 'RSS успешно загружен',

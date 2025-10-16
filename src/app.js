@@ -1,13 +1,16 @@
-import * as yup from 'yup'
 import 'bootstrap'
-import 'bootstrap/dist/css/bootstrap.min.css'
+import * as yup from 'yup'
+import _ from 'lodash'
 import axios from 'axios'
-import watch from './view.js'
 import i18next from 'i18next'
+import watch from './view.js'
+import parse from './parser.js'
 import resources from '../locale/index.js'
 import yupLocale from '../locale/yupLocale.js'
-import parse from './parser.js'
-import _ from 'lodash'
+
+const defaultLanguage = 'ru'
+const waitingTimeout = 10000
+const verificationTimeout = 5000
 
 yup.setLocale(yupLocale)
 
@@ -26,10 +29,21 @@ const addProxy = (url) => {
   return data.href
 }
 
+const getErrorKey = (error) => {
+  switch (true) {
+    case error.isAxiosError:
+      return 'network'
+    case error.isParserError:
+      return 'notRss'
+    default:
+      return 'other'
+  }
+}
+
 const load = (watchedState, url) => {
   watchedState.process = { status: 'loading', error: '' }
   axios.get(addProxy(url), {
-    timeout: 10000,
+    timeout: waitingTimeout,
   })
     .then((response) => {
       const { feed, posts } = parse(response)
@@ -43,12 +57,7 @@ const load = (watchedState, url) => {
       watchedState.feeds.push(feed)
       watchedState.posts.push(...posts)
     })
-    .catch((error) => {
-      if (axios.isAxiosError(error)) {
-        return watchedState.process = { status: 'error', error: 'badConnection' }
-      }
-      return watchedState.process = { status: 'error', error: error.message }
-    })
+    .catch(error => watchedState.process = { status: 'error', error: getErrorKey(error) })
 }
 
 const handleSubmit = watchedState => (event) => {
@@ -66,16 +75,19 @@ const handleSubmit = watchedState => (event) => {
     })
 }
 
-const checkNewPosts = (watchedState) => {
-  const updatedPostsUrls = watchedState.posts.map(post => post.url)
-  console.log(updatedPostsUrls.length)
+const updatePosts = (watchedState) => {
   const promises = watchedState.feeds
     .map(feed => axios.get(addProxy(feed.url), {
-      timeout: 10000,
+      timeout: waitingTimeout,
     })
       .then((response) => {
         const data = parse(response)
         data.posts.forEach((post) => {
+          const updatedPostsUrls = watchedState.posts.map((post) => {
+            if (post.feedId === feed.id) {
+              return post.url
+            }
+          })
           if (!_.includes(updatedPostsUrls, post.url)) {
             post.id = _.uniqueId()
             post.feedId = feed.id
@@ -84,11 +96,7 @@ const checkNewPosts = (watchedState) => {
         })
       }).catch(() => null))
   Promise.all(promises)
-}
-
-const checkEveryFiveSeconds = (watchedState) => {
-  checkNewPosts(watchedState)
-  setTimeout(() => checkEveryFiveSeconds(watchedState), 5000)
+    .then(() => setTimeout(() => updatePosts(watchedState), verificationTimeout))
 }
 
 const app = () => {
@@ -115,10 +123,9 @@ const app = () => {
     },
     feeds: [],
     posts: [],
-    seen: [],
+    seen: new Set(),
   }
 
-  const defaultLanguage = 'ru'
   const i18nextInstance = i18next.createInstance()
   i18nextInstance.init({
     lng: defaultLanguage,
@@ -127,7 +134,7 @@ const app = () => {
   }).then(() => {
     const watchedState = watch(elements, state, i18nextInstance)
     elements.form.addEventListener('submit', handleSubmit(watchedState))
-    checkEveryFiveSeconds(watchedState)
+    updatePosts(watchedState)
   })
 }
 

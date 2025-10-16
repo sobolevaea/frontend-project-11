@@ -18,7 +18,7 @@ The project showcases modern frontend development practices:
 
 Follow these steps to set up the project locally:
 
-- Clone the repository
+1. Clone the repository
 
 ```bash
 git clone git@github.com:sobolevaea/frontend-project-11.git
@@ -27,46 +27,30 @@ git clone git@github.com:sobolevaea/frontend-project-11.git
 cd frontend-project-11
 ```
 
-- Install dependencies
+2. Install dependencies
 
 ```bash
 make install
 ```
 
-- Start the development server
+3. Start in development mode
 
 ```bash
 make run
 ```
 The application will open in your browser at http://localhost:5173 (or another available port).
 
-- Build for production
+## Command Reference
 
-```bash
-make build
-```
-This creates an optimized production build in the dist folder.
-
-- Preview production build
-
-```bash
-make preview
-```
-This serves the production build locally for testing.
-
-## Other useful tools
-
-- Run linter check
-
-```bash
-  make lint
-```
-
-- Fix warnings
-
-```bash
-  make fix
-```
+| Command | Purpose | When to Use |
+|--|--|--|
+|`make install`|Clean installation of dependencies|First setup, after pulling changes with new dependencies|
+|`make run`|Start development server with hot reload|Daily development work|
+|`make build`|Create optimized production build|Before deployment, for testing|
+|`make preview`|Preview production build locally|Final testing before deployment|
+|`make lint`|Check code for style and quality issues|Before commits, in CI/CD pipeline|
+|`make fix`|Automatically fix linting issues|When linting reports fixable errors
+|
 
 ## How to Use
 1. Go to the [**main application page**](https://frontend-project-11-rss-six.vercel.app/).
