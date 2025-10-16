@@ -14,6 +14,60 @@ The project showcases modern frontend development practices:
 - UI Framework: Bootstrap 5 for responsive component design
 - Build Tool: Vite for module bundling and optimization
 
+## Getting started
+
+Follow these steps to set up the project locally:
+
+- Clone the repository
+
+```bash
+git clone git@github.com:sobolevaea/frontend-project-11.git
+```
+```bash
+cd frontend-project-11
+```
+
+- Install dependencies
+
+```bash
+make install
+```
+
+- Start the development server
+
+```bash
+make run
+```
+The application will open in your browser at http://localhost:5173 (or another available port).
+
+- Build for production
+
+```bash
+make build
+```
+This creates an optimized production build in the dist folder.
+
+- Preview production build
+
+```bash
+make preview
+```
+This serves the production build locally for testing.
+
+## Other useful tools
+
+- Run linter check
+
+```bash
+  make lint
+```
+
+- Fix warnings
+
+```bash
+  make fix
+```
+
 ## How to Use
 1. Go to the [**main application page**](https://frontend-project-11-rss-six.vercel.app/).
 2. Paste the link to your favorite RSS feed in the input field.
