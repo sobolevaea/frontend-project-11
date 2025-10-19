@@ -96,10 +96,12 @@ const handleForm = (elements, watchedState, i18nextInstance) => {
     elements.urlField.classList.add('is-invalid')
     elements.feedback.classList.add('text-danger')
     elements.feedback.textContent = i18nextInstance.t(`messages.errors.${watchedState.form.error.key}`)
+    return
   }
   elements.urlField.classList.remove('is-invalid')
   elements.feedback.classList.replace('text-danger', 'text-success')
   elements.feedback.textContent = ''
+
 }
 
 const handleProcess = (elements, watchedState, i18nextInstance) => {
