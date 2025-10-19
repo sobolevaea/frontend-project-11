@@ -101,7 +101,6 @@ const handleForm = (elements, watchedState, i18nextInstance) => {
   elements.urlField.classList.remove('is-invalid')
   elements.feedback.classList.replace('text-danger', 'text-success')
   elements.feedback.textContent = ''
-
 }
 
 const handleProcess = (elements, watchedState, i18nextInstance) => {
